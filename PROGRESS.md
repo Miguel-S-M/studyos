@@ -2,7 +2,7 @@
 
 ## Feito (Etapa 1, parcial)
 - [x] package.json, vite.config.ts (base /studyos/), tsconfig, .gitignore, .env.example (sem segredos)
-- [x] Workflow GitHub Actions: npm ci → test → build → deploy no Pages
+- [x] Workflow GitHub Actions: npm install → test → build → deploy no Pages
 - [x] Núcleo dos cronômetros (src/features/focus/timerCore.ts) + testes (tests/timerCore.test.ts)
 
 ## Feito (Etapa 1, código escrito, NÃO compilado)

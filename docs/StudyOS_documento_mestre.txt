@@ -1,0 +1,750 @@
+STUDYOS — DOCUMENTO MESTRE DO PROJETO
+Planejamento funcional, técnico, visual, de segurança e desenvolvimento
+Versão: 1.0
+Data: 23/10/2026
+
+======================================================================
+1. VISÃO GERAL
+======================================================================
+
+Nome provisório: StudyOS
+Assistente integrado: Holo
+
+Objetivo:
+Criar um ambiente completo para estudar, organizar tarefas, acompanhar o
+tempo de foco, aprender de forma mais eficiente, guardar conhecimentos e
+analisar a própria evolução. O site deve ser útil mesmo sem conta e sem
+internet para as funções centrais, com sincronização em nuvem opcional.
+
+Princípios do produto:
+- Registrar o estudo sem tornar o sistema complicado.
+- Medir não apenas horas estudadas, mas também compreensão e retenção.
+- Funcionar primeiro no navegador, sem obrigar o usuário a criar uma conta.
+- Permitir ativar sincronização em nuvem quando o usuário quiser.
+- Manter os dados pessoais privados, mesmo com o código-fonte público.
+- Ter uma interface rápida, acessível, responsiva e visualmente consistente.
+- Começar com serviços gratuitos sempre que possível, respeitando os limites
+  e termos de cada provedor.
+- Desenvolver os módulos em etapas, com testes e segurança desde o início.
+
+======================================================================
+2. HOSPEDAGEM E ARQUITETURA
+======================================================================
+
+Decisões confirmadas:
+- Repositório público no GitHub.
+- Publicação do site pelo GitHub Pages.
+- Orçamento inicial: priorizar serviços gratuitos.
+- Armazenamento local por padrão, com sincronização opcional.
+- O código-fonte do projeto ficará centralizado em um único repositório.
+- O site deverá continuar funcionando para as funções centrais sem conta.
+
+Tecnologias propostas:
+- React: interface e componentes.
+- TypeScript: tipos e maior segurança no desenvolvimento.
+- Vite: desenvolvimento e compilação.
+- Tailwind CSS: sistema de estilos.
+- React Router: navegação entre páginas.
+- IndexedDB com Dexie: banco de dados local no navegador.
+- Zod: validação de dados.
+- Recharts: gráficos e estatísticas.
+- Vitest e Testing Library: testes automatizados.
+- GitHub Actions: compilação e publicação automática no GitHub Pages.
+- Supabase opcional: autenticação, banco de dados e sincronização em nuvem.
+- Supabase Edge Functions ou backend equivalente: chamadas seguras à IA e
+  serviços que necessitem de segredo no servidor.
+
+Limitação essencial:
+GitHub Pages hospeda arquivos estáticos. Não executa um servidor privado.
+A interface, timers e funções locais podem funcionar ali. Recursos que
+precisem de chaves secretas, como chamadas a certos provedores de IA, devem
+usar uma função de servidor hospedada separadamente. O código dessa função
+pode ficar no mesmo repositório, mas a execução será feita pelo serviço
+externo.
+
+Modo local:
+- Guardar dados no navegador usando IndexedDB.
+- Permitir exportar os dados para arquivo JSON e importá-los depois.
+- Avisar que limpar os dados do navegador ou perder o dispositivo pode
+  eliminar dados que não tenham sido exportados.
+- Não tratar o armazenamento local como backup permanente.
+- O modo local não sincroniza automaticamente entre computadores.
+
+Modo sincronizado opcional:
+- Permitir que o usuário crie uma conta e conecte seus dados à nuvem.
+- Usar políticas de segurança no banco para que cada pessoa acesse somente
+  seus próprios registros.
+- Ter fluxo de migração que apresente os dados locais, detecte possíveis
+  duplicatas e peça confirmação antes de mesclar.
+- Tratar conflitos de edição sem apagar informações silenciosamente.
+- Oferecer exportação e exclusão dos dados pessoais.
+- Não exigir sincronização para usar as funções básicas do site.
+
+======================================================================
+3. IDENTIDADE VISUAL E EXPERIÊNCIA
+======================================================================
+
+Direção visual principal:
+- Tema escuro premium e tecnológico.
+- Preto e grafite como base.
+- Cobre e laranja como cores de destaque.
+- Texto de alto contraste e tipografia legível.
+- Painéis, cartões, gráficos e indicadores consistentes.
+- Animações discretas e rápidas; evitar efeitos que distraiam durante o foco.
+- Design responsivo para computador, tablet e celular.
+- Interface acessível por teclado e com estados de foco visíveis.
+- Preferência por reduzir movimento quando o dispositivo assim solicitar.
+
+Layout:
+- Navegação lateral no computador.
+- Navegação compacta ou inferior no celular.
+- Atalho persistente para a sessão de foco ativa.
+- Indicadores de sincronização e estado de armazenamento.
+- Estados claros para carregamento, erro, vazio e sucesso.
+- Confirmação antes de ações destrutivas.
+
+Páginas principais:
+1. Dashboard.
+2. Foco e cronômetros.
+3. Matérias.
+4. Tarefas e listas.
+5. Calendário e histórico.
+6. Estatísticas e insights de produtividade.
+7. Laboratório de memória.
+8. Biblioteca e leitura.
+9. Insights e notas.
+10. Media Hub: YouTube e Spotify.
+11. Holo.
+12. Comunidade opcional.
+13. Configurações.
+
+======================================================================
+4. DASHBOARD
+======================================================================
+
+Objetivo:
+Mostrar o estado do dia e permitir iniciar rapidamente a próxima atividade.
+
+Elementos:
+- Tempo de estudo de hoje.
+- Meta diária e progresso.
+- Número de sessões concluídas.
+- Distribuição de tempo por matéria.
+- Tarefas pendentes e próximas datas-limite.
+- Atalho para iniciar cronômetro.
+- Resumo da leitura, separado do estudo acadêmico.
+- Revisões de flashcards que vencem hoje.
+- Resumo de metas semanais.
+- Sugestões contextuais do Holo, quando habilitadas.
+- Histórico recente.
+- Indicador de modo local ou sincronizado.
+
+Os dados do dashboard devem ser calculados a partir dos registros originais,
+não mantidos como totais independentes que possam ficar inconsistentes.
+
+======================================================================
+5. FOCO E CRONÔMETROS
+======================================================================
+
+Modos:
+- Cronômetro livre.
+- Pomodoro configurável.
+- Contagem regressiva.
+- Sessão com objetivo de duração.
+- Temporizador de pausa.
+
+Controles:
+- Iniciar, pausar, retomar, finalizar e cancelar.
+- Escolher matéria e, opcionalmente, tarefa.
+- Adicionar notas à sessão.
+- Associar música, playlist ou vídeo, quando disponível.
+- Configurar duração de foco, pausas curtas e pausas longas.
+- Permitir que o usuário escolha se deseja notificações.
+- Recuperar uma sessão ativa depois de recarregar a página.
+- Manter a sessão ao navegar entre páginas.
+- Não criar duas sessões para o mesmo período por erro de clique ou múltiplas abas.
+
+Precisão:
+- Calcular tempo usando timestamps reais de início, pausa, retomada e fim.
+- Não depender exclusivamente de um contador que aumenta a cada segundo.
+- Guardar pausas separadamente.
+- Não contar pausas como tempo de foco.
+- Tratar sessão que atravessa meia-noite, mudança de fuso e relógio do sistema.
+- Detectar sessão abandonada e oferecer uma decisão ao usuário.
+- Evitar duplicação quando houver várias abas abertas.
+
+Registro de sessão de estudo:
+- Identificador.
+- Matéria.
+- Tarefa opcional.
+- Tipo de cronômetro.
+- Data/hora de início e fim.
+- Duração focada.
+- Pausas e durações.
+- Estado.
+- Notas.
+- Mídia associada opcional.
+- Origem do registro: local ou sincronizada.
+
+======================================================================
+6. MATÉRIAS E METAS
+======================================================================
+
+Cada matéria pode ter:
+- Nome.
+- Descrição opcional.
+- Cor e ícone.
+- Meta diária e/ou semanal.
+- Data de criação.
+- Estado ativo ou arquivado.
+- Tarefas relacionadas.
+- Sessões relacionadas.
+- Estatísticas históricas.
+
+Funções:
+- Criar, editar, arquivar e reativar matérias.
+- Filtrar sessões por matéria.
+- Comparar meta planejada e tempo real.
+- Identificar matérias negligenciadas.
+- Evitar excluir registros históricos ao arquivar uma matéria.
+
+======================================================================
+7. TAREFAS E LISTAS
+======================================================================
+
+Cada tarefa pode conter:
+- Título e descrição.
+- Matéria associada.
+- Prioridade.
+- Prazo.
+- Estado: pendente, em andamento, concluída ou arquivada.
+- Subtarefas/checklist.
+- Estimativa de duração.
+- Tempo real registrado em sessões.
+- Tags.
+- Data de criação e conclusão.
+
+Funções:
+- Criar listas e organizar tarefas por matéria.
+- Ordenar por prioridade, prazo e estado.
+- Filtrar tarefas.
+- Associar uma sessão de foco a uma tarefa.
+- Comparar estimativa e duração real.
+- Mostrar tarefas vencidas sem esconder as demais.
+- Confirmar antes de apagar permanentemente.
+
+======================================================================
+8. CALENDÁRIO E HISTÓRICO
+======================================================================
+
+- Visão diária, semanal e mensal.
+- Histórico de sessões por data e hora.
+- Filtros por matéria, tipo de sessão e intervalo.
+- Visualização das pausas e duração focada.
+- Comparação de dias e semanas.
+- Exportação CSV.
+- Exportação completa em JSON.
+- Datas armazenadas com timestamps e exibidas no fuso local.
+- Regras consistentes para sessões que atravessam a meia-noite.
+- Correção manual de registros com confirmação e histórico quando possível.
+
+======================================================================
+9. ESTATÍSTICAS E INTELIGÊNCIA DE ESTUDOS
+======================================================================
+
+Indicadores:
+- Tempo por dia, semana, mês e período personalizado.
+- Tempo por matéria.
+- Sessões concluídas e duração média.
+- Meta planejada versus resultado real.
+- Média diária e semanal.
+- Distribuição por horário.
+- Mapa de calor de atividade.
+- Sequências de dias de estudo (streaks).
+- Evolução por matéria.
+- Tendências de consistência.
+- Estatísticas de leitura em área separada.
+- Tempo combinado de produtividade apenas se o usuário ativar essa visualização.
+
+Inteligência:
+- Sinalizar matérias que receberam pouco tempo.
+- Identificar metas frequentemente não cumpridas.
+- Sugerir redistribuição do tempo com base no histórico.
+- Estimar se o plano diário parece realista.
+- Mostrar explicações sobre como cada recomendação foi produzida.
+- Não afirmar que um horário é o mais produtivo sem dados suficientes.
+- Permitir desativar sugestões e análises.
+
+Os gráficos devem ser derivados das sessões e tarefas originais. Os resultados
+serão aproximados quando os registros forem incompletos.
+
+======================================================================
+10. LABORATÓRIO DE MEMÓRIA
+======================================================================
+
+Objetivo:
+Ajudar o usuário a lembrar e compreender o conteúdo, não apenas acumular horas.
+
+Funcionalidades:
+- Criar flashcards manualmente.
+- Criar cartões a partir de notas ou insights selecionados.
+- Criar perguntas de revisão com ajuda do Holo, quando a IA estiver configurada.
+- Revisar sem mostrar a resposta antecipadamente.
+- Marcar resposta como difícil, parcial ou fácil.
+- Repetição espaçada para programar a próxima revisão.
+- Fila de revisões do dia.
+- Estatísticas de cartões dominados, difíceis e atrasados.
+- Organizar cartões por matéria, livro e tags.
+- Importar e exportar cartões.
+- Pesquisar e editar cartões.
+- Associar cartões a uma fonte ou página do livro.
+
+A agenda de repetição espaçada deve ser implementada e testada com regras
+documentadas. O sistema não deve afirmar que o usuário domina um assunto
+apenas porque completou um cartão.
+
+======================================================================
+11. BIBLIOTECA E LEITURA
+======================================================================
+
+Cada livro pode ter:
+- Título e autor.
+- Capa opcional.
+- Editora e edição.
+- ISBN opcional.
+- Gênero/categoria.
+- Idioma.
+- Formato: físico, digital ou audiolivro.
+- Total de páginas, quando aplicável.
+- Página atual.
+- Data de início e conclusão.
+- Estado: quero ler, lendo, pausado, concluído ou abandonado.
+- Avaliação e comentário pessoal.
+- Tags.
+- Meta de páginas por dia/semana.
+
+A entrada manual deve funcionar mesmo quando não houver consulta bibliográfica.
+
+Timer de leitura:
+- Escolher o livro.
+- Iniciar, pausar, retomar e finalizar.
+- Guardar duração focada e pausas.
+- Registrar página inicial e final.
+- Calcular páginas avançadas quando os dados permitirem.
+- Adicionar nota ao fim da sessão.
+- Associar a sessão às notas e insights relevantes.
+
+Regra:
+Tempo de leitura fica separado do tempo de estudo acadêmico. O usuário poderá
+ativar uma visão agregada de produtividade, sem somar o mesmo período duas vezes.
+
+======================================================================
+12. INSIGHTS, NOTAS E CONHECIMENTO
+======================================================================
+
+Tipos de registro:
+- Citação literal.
+- Ideia central explicada com palavras próprias.
+- Aprendizado.
+- Aplicação prática.
+- Pergunta ou dúvida.
+- Relação com outra obra, matéria ou experiência.
+- Resumo pessoal.
+
+Campos:
+- Conteúdo.
+- Tipo.
+- Livro ou matéria associada.
+- Página e edição, quando aplicável.
+- Data.
+- Tags.
+- Favorito/importância.
+- Reflexão pessoal.
+- Data de revisão.
+- Relações com outros insights.
+
+Funções:
+- Pesquisa e filtros.
+- Organização por livro, matéria e tag.
+- Favoritos.
+- Resumos pessoais.
+- Criar flashcards a partir de notas selecionadas.
+- Gerar perguntas de revisão com Holo, quando configurado.
+- Lembretes de revisão.
+- Exportação.
+- Distinguir claramente texto original do usuário e conteúdo gerado por IA.
+- Guardar a referência de origem de citações literais.
+
+======================================================================
+13. HOLO — ASSISTENTE DE ESTUDOS
+======================================================================
+
+Holo é o assistente integrado ao StudyOS. A interface pode existir sem IA
+ativa, mas respostas geradas exigirão um provedor configurado.
+
+Personalidades:
+- Martin: firme, direto e disciplinado, sem humilhar.
+  Exemplo: "Você não precisa estar motivado. Precisa dar o primeiro passo."
+- Lumi: acolhedora e paciente.
+  Exemplo: "Você não precisa resolver tudo hoje. Vamos resolver a próxima coisa."
+- Sage: analítica e estratégica.
+  Exemplo: "Qual atividade mais aproxima você da sua meta hoje?"
+- Pixel: descontraída e lúdica.
+  Exemplo: "Missão aceita. Vamos vencer esses exercícios?"
+- Atlas: professor que estimula recordação ativa.
+  Exemplo: "Tente explicar o conceito com suas próprias palavras antes de consultar a resposta."
+
+Funções:
+- Conversar sobre estudo.
+- Ajudar a planejar o dia ou a semana.
+- Recomendar uma próxima tarefa com base nos dados autorizados.
+- Explicar conceitos em diferentes níveis.
+- Criar perguntas, exercícios e flashcards.
+- Resumir insights selecionados.
+- Fazer revisão semanal.
+- Identificar matérias pouco estudadas quando houver dados suficientes.
+- Sugerir uma sessão ou Pomodoro, pedindo confirmação antes de iniciar ações.
+- Permitir ajustar tom, intensidade e frequência das mensagens.
+- Permitir desativar mensagens motivacionais e notificações.
+- Permitir optar por salvar ou não o histórico de conversas.
+
+Contexto e privacidade:
+- Enviar ao serviço de IA somente os dados necessários à solicitação.
+- Nunca expor a chave de IA no frontend.
+- Usar função de servidor, autenticação e limites de uso.
+- Não enviar notas privadas automaticamente sem necessidade e consentimento.
+- Distinguir dados reais de inferências e sugestões.
+- Não inventar estatísticas pessoais.
+- Não usar mensagens humilhantes, coercitivas ou agressivas.
+- Exigir confirmação para ações com efeitos relevantes.
+
+======================================================================
+14. MEDIA HUB — YOUTUBE E SPOTIFY
+======================================================================
+
+YouTube:
+- Guardar vídeos educacionais e favoritos.
+- Organizar por matéria e tags.
+- Incorporar vídeos compatíveis com as regras da plataforma.
+- Associar vídeo a tarefa, sessão ou matéria.
+- Registrar notas e marcar como concluído.
+- Permitir abrir o vídeo externamente.
+- Respeitar restrições de incorporação e limites da API.
+
+Spotify:
+- Guardar links de músicas e playlists.
+- Associar playlist a uma sessão.
+- Abrir conteúdo no Spotify.
+- Implementar controles ou reprodução incorporada somente quando autorizados
+  pelas APIs, conta, permissões e condições atuais do serviço.
+- Não prometer reprodução completa antes de verificar os requisitos vigentes.
+
+Segurança e custos:
+- Usar OAuth quando necessário.
+- Não colocar segredos de cliente no código público.
+- Guardar tokens sensíveis de forma apropriada.
+- Verificar termos, limites, elegibilidade e requisitos atuais antes de ativar.
+- Fornecer alternativas de abrir o conteúdo externamente.
+- A integração básica por links deve funcionar sem credenciais privadas.
+
+======================================================================
+15. COMUNIDADE OPCIONAL
+======================================================================
+
+Possíveis funções:
+- Grupos de estudo.
+- Metas compartilhadas.
+- Desafios.
+- Rankings opt-in.
+- Sequências e conquistas compartilháveis.
+- Notificações sociais configuráveis.
+
+Regras:
+- O site deve continuar completo para quem não quiser participar.
+- Notas de livros, conversas do Holo e dados pessoais são privados por padrão.
+- Não publicar estatísticas pessoais automaticamente.
+- Oferecer controles de privacidade e saída de grupos.
+- Planejar moderação e prevenção de abuso antes de lançar a comunidade.
+- Deixar este módulo para uma etapa posterior, após autenticação e segurança.
+
+======================================================================
+16. CONFIGURAÇÕES
+======================================================================
+
+- Tema visual e preferências de interface.
+- Preferências de notificações.
+- Duração de foco e pausas.
+- Metas diárias e semanais.
+- Preferências do Holo.
+- Modo local ou sincronizado.
+- Exportar e importar dados.
+- Conectar/desconectar integrações.
+- Configurações de privacidade.
+- Solicitar exclusão de conta e dados, quando houver nuvem.
+- Visualizar estado de sincronização.
+- Preferências de idioma, quando implementadas.
+
+======================================================================
+17. MODELO DE DADOS
+======================================================================
+
+Entidades locais principais:
+- ProfileSettings: preferências locais.
+- Subjects: matérias.
+- Tasks: tarefas e subtarefas.
+- StudySessions: sessões de estudo.
+- SessionPauses: pausas.
+- DailyGoals: metas.
+- ReadingBooks: livros.
+- ReadingSessions: sessões de leitura.
+- Insights: notas e insights.
+- Flashcards: cartões de memória.
+- ReviewEvents: revisões realizadas e próximas datas.
+- MediaBookmarks: links e conteúdos guardados.
+- HoloPreferences: preferências do assistente.
+- HoloConversations: histórico somente se o usuário optar por guardar.
+- SyncMetadata: identificadores, versão e estado de sincronização.
+
+Na nuvem, tabelas equivalentes podem ser criadas com identificadores estáveis,
+campos de criação/atualização e políticas de acesso. Cada registro sincronizado
+deve ter dono definido e regras de autorização. A arquitetura deve impedir que
+a mesma sessão seja importada duas vezes.
+
+Evitar armazenar apenas totais agregados como fonte de verdade. Sessões e
+eventos originais devem permitir recalcular as estatísticas.
+
+======================================================================
+18. SEGURANÇA PARA O REPOSITÓRIO PÚBLICO
+======================================================================
+
+Permitido no repositório:
+- Código da interface e componentes.
+- Configuração pública do frontend.
+- Esquemas e migrações do banco sem credenciais.
+- Regras de segurança e documentação.
+- Arquivo .env.example com nomes de variáveis e valores fictícios.
+- Testes e workflow de publicação.
+
+Nunca enviar ao repositório:
+- Chaves secretas de IA.
+- Tokens pessoais ou de acesso.
+- Senhas de banco.
+- Chaves administrativas/service-role.
+- Segredos OAuth.
+- Arquivos .env reais.
+- Backups com dados de usuários.
+- Dados pessoais reais usados em testes.
+
+Medidas:
+- Manter .gitignore desde o primeiro commit.
+- Ativar e conferir a proteção contra envio de segredos do GitHub, quando disponível.
+- Usar variáveis/segredos no serviço de servidor para credenciais privadas.
+- Tratar qualquer chave pública como visível para todos.
+- Não confiar apenas em esconder botões ou rotas no frontend.
+- Aplicar autenticação e políticas RLS no banco sincronizado.
+- Limitar uso de endpoints de IA e serviços externos.
+- Validar entradas e tratar erros.
+- Atualizar dependências e revisar alertas.
+- Se um segredo for exposto, revogá-lo/rotacioná-lo; apagar o arquivo não basta.
+- Não colocar dados pessoais nos logs.
+- Testar autorização com duas contas diferentes.
+- Documentar retenção, exportação e exclusão de dados.
+
+======================================================================
+19. ESTRUTURA SUGERIDA DO REPOSITÓRIO
+======================================================================
+
+studyos/
+  .github/
+    workflows/
+      deploy.yml
+  public/
+    favicon.svg
+    manifest.webmanifest
+  src/
+    app/
+    components/
+    features/
+      dashboard/
+      focus/
+      subjects/
+      tasks/
+      calendar/
+      statistics/
+      memory-lab/
+      library/
+      insights/
+      media-hub/
+      holo/
+      community/
+      settings/
+    services/
+      storage/
+      sync/
+      spotify/
+      youtube/
+      ai/
+    hooks/
+    types/
+    styles/
+  supabase/
+    migrations/
+    functions/
+  tests/
+  .env.example
+  .gitignore
+  README.md
+  package.json
+  tsconfig.json
+  vite.config.ts
+
+A estrutura pode ser ajustada conforme o projeto cresce. Evitar criar muitos
+arquivos vazios sem necessidade; cada módulo deve ser implementado e testado
+em etapas.
+
+======================================================================
+20. PUBLICAÇÃO PELO GITHUB PAGES
+======================================================================
+
+- Criar repositório público chamado studyos.
+- Usar main como branch principal.
+- Configurar React, TypeScript, Vite e Tailwind.
+- Configurar a base do Vite para o caminho do projeto no GitHub Pages.
+- Criar workflow GitHub Actions para instalar dependências, executar testes,
+  compilar e publicar o site.
+- Ativar GitHub Pages usando GitHub Actions.
+- Testar rotas, atualização direta da página e links.
+- Verificar a publicação em computador e celular.
+- Nunca incluir segredos nos arquivos publicados.
+- O workflow deve falhar se os testes ou a compilação falharem.
+
+GitHub Pages publica a interface estática; banco de dados, autenticação e
+funções de servidor são serviços separados.
+
+======================================================================
+21. TESTES E CRITÉRIOS DE QUALIDADE
+======================================================================
+
+Testar:
+- Iniciar, pausar, retomar e finalizar timers.
+- Recarregar página com sessão ativa.
+- Sessões que atravessam meia-noite.
+- Pausas excluídas do tempo focado.
+- Várias abas abertas.
+- Evitar registros duplicados.
+- Cálculos de totais por dia, semana e matéria.
+- Exportação e importação de JSON.
+- Recuperação após atualização do site.
+- Validação de dados importados.
+- Conflitos e falhas de sincronização.
+- Permissões entre contas.
+- Interface em telas pequenas.
+- Navegação por teclado e contraste.
+- Erros de rede e ausência de integração.
+- Limites e falhas da API de IA.
+- Falhas de serviços externos sem quebrar o restante do site.
+
+O produto não deve perder registros silenciosamente. Quando houver falha de
+sincronização, mostrar o estado e permitir tentar novamente.
+
+======================================================================
+22. ROADMAP DE DESENVOLVIMENTO
+======================================================================
+
+ETAPA 1 — Fundação
+- Criar repositório e configuração.
+- Definir design system.
+- Implementar navegação responsiva.
+- Criar dashboard inicial.
+- Configurar GitHub Actions e GitHub Pages.
+- Criar camada de armazenamento local.
+- Documentar instalação e uso.
+
+ETAPA 2 — Produtividade central
+- Cronômetros e Pomodoro.
+- Matérias e metas.
+- Tarefas e listas.
+- Calendário e histórico.
+- Exportação e importação.
+- Estatísticas básicas.
+- Testes dos cálculos de tempo.
+
+ETAPA 3 — Aprendizagem
+- Biblioteca.
+- Timer de leitura.
+- Insights e notas.
+- Flashcards.
+- Repetição espaçada.
+- Estatísticas de revisão.
+
+ETAPA 4 — Sincronização opcional
+- Configurar Supabase.
+- Criar autenticação.
+- Projetar tabelas e políticas RLS.
+- Implementar sincronização e conflitos.
+- Testar isolamento entre usuários.
+- Implementar exportação e exclusão.
+
+ETAPA 5 — Holo
+- Interface de chat.
+- Personalidades.
+- Preferências de privacidade.
+- Função de servidor e provedor de IA.
+- Contexto selecionado e mínimo.
+- Limites de uso.
+- Geração de exercícios e apoio ao planejamento.
+
+ETAPA 6 — Media Hub
+- Favoritos e links.
+- YouTube e conteúdo incorporável.
+- Spotify com recursos permitidos.
+- Associação de mídia às sessões.
+- Verificar requisitos e termos atuais das APIs.
+
+ETAPA 7 — Recursos avançados
+- Inteligência de estudos.
+- Sugestões adaptativas.
+- Comunidade opcional.
+- Rankings e desafios opt-in.
+- Notificações configuráveis.
+- Auditoria de segurança, acessibilidade e desempenho.
+
+======================================================================
+23. DEFINIÇÃO DE PRONTO
+======================================================================
+
+Uma funcionalidade só será considerada concluída quando:
+- Funcionar no uso real, não apenas visualmente.
+- Salvar e recuperar dados corretamente.
+- Ter estados de carregamento, vazio e erro.
+- Ser utilizável em computador e celular.
+- Ter validações e tratamento de falhas.
+- Não expor segredos nem dados privados.
+- Ter testes apropriados.
+- Ser documentada no README quando necessário.
+
+Não simular integrações como se fossem reais. Se uma API ainda não estiver
+configurada, mostrar claramente que o recurso está indisponível ou oferecer
+uma alternativa funcional.
+
+======================================================================
+24. RESUMO DAS DECISÕES
+======================================================================
+
+- Nome provisório: StudyOS.
+- Assistente: Holo, com personalidades selecionáveis.
+- Visual: premium escuro, preto/grafite com cobre e laranja.
+- Hospedagem da interface: GitHub Pages.
+- Código-fonte: um único repositório público no GitHub.
+- Dados: local por padrão, sincronização opcional.
+- Orçamento: começar com serviços gratuitos.
+- Tecnologia: React, TypeScript, Vite e Tailwind CSS.
+- Armazenamento local: IndexedDB.
+- Nuvem opcional: Supabase, com políticas de segurança.
+- Holo/IA: função de servidor; chave secreta nunca no frontend.
+- Spotify e YouTube: implementar conforme permissões e limites atuais.
+- Desenvolvimento: por etapas, começando pela fundação e pelo núcleo de estudo.
+- Segurança: privacidade por padrão, exportação de dados e nenhuma credencial
+  privada no repositório público.
+
+FIM DO DOCUMENTO

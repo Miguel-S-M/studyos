@@ -1,0 +1,6 @@
+Esta pasta guarda duas coisas visiveis (pastas que comecam com ponto costumam ser ignoradas pelo upload do GitHub):
+
+1) StudyOS_documento_mestre.txt - o documento que descreve o projeto.
+2) deploy.yml - copia do workflow que publica o site. O arquivo que o GitHub executa precisa estar em
+   .github/workflows/deploy.yml (com o ponto no inicio). Se a pasta .github nao chegou ao repositorio,
+   crie o arquivo la pelo botao "Add file > Create new file" e cole o conteudo deste deploy.yml.

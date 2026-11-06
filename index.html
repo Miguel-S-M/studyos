@@ -2,13 +2,38 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0b0b0c" />
+    <meta name="color-scheme" content="dark" />
     <title>StudyOS</title>
-    <link rel="icon" type="image/svg+xml" href="/studyos/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="icon.svg" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div id="app">
+      <nav id="nav" aria-label="Principal"></nav>
+      <main id="main" tabindex="-1"><p class="muted pad">Carregando o StudyOS…</p></main>
+    </div>
+    <noscript><p class="pad">O StudyOS precisa de JavaScript ativado para funcionar.</p></noscript>
+    <script>
+      /* Diagnóstico: se algo falhar, a página mostra o motivo em vez de ficar em branco. */
+      (function () {
+        function show(msg) {
+          var m = document.getElementById('main'); if (!m) return
+          var p = document.createElement('p'); p.style.cssText = 'padding:1rem;color:#f87171;white-space:pre-wrap'; p.textContent = msg
+          m.textContent = ''; m.appendChild(p)
+        }
+        window.addEventListener('error', function (e) {
+          var t = e.target
+          if (t && t.tagName === 'SCRIPT') show('Não foi possível carregar ' + (t.getAttribute('src') || 'um arquivo') + '.\nConfira se a pasta "js" (com as subpastas "core" e "views") foi enviada para a raiz do repositório.')
+          else if (e.message) show('Erro: ' + e.message + (e.filename ? '\n' + e.filename + ':' + e.lineno : ''))
+        }, true)
+        window.addEventListener('unhandledrejection', function (e) { show('Erro: ' + (e.reason && e.reason.message ? e.reason.message : e.reason)) })
+        setTimeout(function () {
+          if (!window.__studyos) show('O StudyOS não iniciou.\n1) Abra o endereço .../js/main.js neste mesmo site. Se der erro 404, a pasta "js" não foi enviada.\n2) Aperte F12, abra a aba Console e copie o erro em vermelho.')
+        }, 4000)
+      })()
+    </script>
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>
